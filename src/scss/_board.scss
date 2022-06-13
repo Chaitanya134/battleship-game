@@ -1,0 +1,29 @@
+.board-container {
+    @include flex;
+}
+
+.board {
+    --board-size: 10;
+    display: grid;
+    grid-template: repeat(var(--board-size), 1fr) / repeat(var(--board-size), 1fr);
+    gap: $cell-gap;
+    width: fit-content;
+
+    .cell {
+        height: $cell-size;
+        aspect-ratio: 1;
+        border: 1px solid #333;
+    
+        &.ship {
+            background: #333;
+        }
+
+        &.hit {
+            background: green;
+        }
+
+        &.miss {
+            background: red;
+        }
+    }
+}
