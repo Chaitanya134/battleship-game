@@ -14,15 +14,18 @@
         aspect-ratio: 1;
         border: 1px solid #333;
     
-        &.ship {
+        &.ship-cell {
             background: #333;
         }
-
+        &.over {
+            background: yellow;
+        }
         &.hit {
             background: green;
         }
 
-        &.miss {
+        &.miss,
+        &.cannot-drop {
             background: red;
         }
     }
