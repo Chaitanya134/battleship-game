@@ -13,13 +13,11 @@
         height: $cell-size;
         aspect-ratio: 1;
         border: 1px solid #333;
-    
-        &.ship-cell {
-            background: #333;
-        }
+
         &.over {
             background: yellow;
         }
+
         &.hit {
             background: green;
         }

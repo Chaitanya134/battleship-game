@@ -4,12 +4,12 @@ import { useDragLayer } from 'react-dnd'
 const ShipDragLayer = ({ shipId, size }) => {
 
     const shipDragLayerRef = useRef();
-    const { isDragging, item, initialOffset, currentOffset } = useDragLayer((monitor) => ({
+    const { isDragging, item, initialOffset, currentOffset } = useDragLayer(monitor => ({
         item: monitor.getItem(),
         itemType: monitor.getItemType(),
         initialOffset: monitor.getInitialSourceClientOffset(),
         currentOffset: monitor.getSourceClientOffset(),
-        isDragging: monitor.isDragging(),
+        isDragging: monitor.isDragging()
     }));
 
     function getItemStyles(initialOffset, currentOffset) {
@@ -30,14 +30,27 @@ const ShipDragLayer = ({ shipId, size }) => {
 
     function handleIntersection() {
         const shipRect = shipDragLayerRef.current.getBoundingClientRect();
+        item.cells.length = 0;
         document.querySelectorAll(".cell").forEach(cell => {
             const cellRect = cell.getBoundingClientRect();
             const isOver = shipRect.left > cellRect.left &&
-                            shipRect.right < cellRect.right &&
-                            shipRect.top < (cellRect.bottom - cellRect.height / 2) &&
-                            shipRect.bottom > (cellRect.top + cellRect.height / 2);
+                shipRect.right < cellRect.right &&
+                shipRect.top < (cellRect.bottom - cellRect.height / 2) &&
+                shipRect.bottom > (cellRect.top + cellRect.height / 2);
+            
+            if (isOver && !item.cells.includes(cell.id)) {
+                item.cells?.push(cell.id);
+            } else {
+                item.cells = item.cells?.filter(cellId => cellId !== cell.id);
+            }
+            const cannotDrop = isOver && cell.classList.contains("ship-cell");
+            cell.classList.toggle("cannot-drop", cannotDrop);
             cell.classList.toggle("over", isOver);
         })
+
+        if (item.cells.length < item.rows) {
+            [...item.cells].forEach(cellId => document.getElementById(cellId).classList.add("cannot-drop"));
+        }
     }
 
     useEffect(() => {

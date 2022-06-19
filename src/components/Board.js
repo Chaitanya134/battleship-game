@@ -15,7 +15,7 @@ const Board = () => {
         {
           Array(boardSize * boardSize).fill(0).map((_, index) => {
             return (
-              <Cell key={index} />
+              <Cell key={index} index={index} />
             )
           })
         }
