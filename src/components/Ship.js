@@ -49,12 +49,21 @@ const Ship = ({ size }) => {
 
         // create a ship on the board
         const ship = document.getElementById(id).cloneNode();
+        document.body.appendChild(ship);
         ship.className = `ship dropped-ship ${item.size}`;
         ship.style.left = firstCellPosition.x + 'px';
         ship.style.top = firstCellPosition.y + 'px';
         ship.style.transform = 'translateX(-50%)';
         ship.draggable = false;
-        document.body.appendChild(ship);
+
+        const rotate = document.getElementById(id).classList.contains("rotate");
+        if (rotate) {
+            const { height, width } = ship.getBoundingClientRect();
+            ship.style.left = (firstCellRect.left + height / 2) + 'px';
+            ship.style.top = (firstCellRect.top - width / 2 - (getRowsBySize(size) - 1) / 2 * firstCellRect.height) + 'px';
+            ship.style.transformOrigin = "left";
+            ship.style.transform = `rotate(90deg)`;
+        }
 
         [...item.cells].forEach(cellId => document.getElementById(cellId).classList.add("ship-cell"));
     }
@@ -62,17 +71,10 @@ const Ship = ({ size }) => {
     return (
         <>
             <ShipDragLayer shipId={id} size={size} />
-            <img ref={drag} id={id} src="assets/images/ship.svg" alt='ship' className={'ship ' + size}
-                onDragEnd={() => {
-                    // document.querySelectorAll(".cell").forEach(cell => {
-                    //     cell.classList.remove("over");
-                    // });
-                    // console.log(item);
-                    // const ship = document.createElement('div');
-                    // ship.classList.add(["ship", "dropped-ship"]);
-                    // document.getElementById("board").appendChild(ship);
-                    // const { row, col } = getRowCol();
-                }} />
+            <img ref={drag} id={id} src="assets/images/ship.svg" alt='ship' className={'ship ' + size} />
+            <span onClick={e => {
+                document.getElementById(id).classList.toggle("rotate");
+            }}>Rotate</span>
         </>
     )
 }

@@ -8,11 +8,14 @@
     grid-template: repeat(var(--board-size), 1fr) / repeat(var(--board-size), 1fr);
     gap: $cell-gap;
     width: fit-content;
+    border-top: 1px solid #333;
+    border-left: 1px solid #333;
 
     .cell {
         height: $cell-size;
         aspect-ratio: 1;
-        border: 1px solid #333;
+        border-right: 1px solid #333;
+        border-bottom: 1px solid #333;
 
         &.over {
             background: yellow;

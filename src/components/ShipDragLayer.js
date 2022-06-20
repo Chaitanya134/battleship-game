@@ -19,10 +19,17 @@ const ShipDragLayer = ({ shipId, size }) => {
             };
         }
 
-        const { x, y } = currentOffset;
-        const transform = `translate(${x}px, ${y}px)`;
+        const rotate = document.getElementById(shipId).classList.contains("rotate");
+        let { x, y } = currentOffset;
+        if (rotate) {
+            const { width } = document.getElementById(shipId).getBoundingClientRect();
+            x = x + width / 2;
+            y = y - width / 2;
+        }
+        const transform = `translate(${x}px, ${y}px) ${rotate ? 'rotate(90deg)' : ''}`;
 
         return {
+            transformOrigin: "left",
             transform,
             WebkitTransform: transform
         }
@@ -30,14 +37,23 @@ const ShipDragLayer = ({ shipId, size }) => {
 
     function handleIntersection() {
         const shipRect = shipDragLayerRef.current.getBoundingClientRect();
+        const rotate = document.getElementById(shipId).classList.contains("rotate");
         item.cells.length = 0;
         document.querySelectorAll(".cell").forEach(cell => {
             const cellRect = cell.getBoundingClientRect();
-            const isOver = shipRect.left > cellRect.left &&
+            let isOver;
+            if (rotate) {
+                isOver = shipRect.left < (cellRect.left + cellRect.width / 2) &&
+                shipRect.right > (cellRect.right - cellRect.width / 2) &&
+                shipRect.top > cellRect.top && 
+                shipRect.bottom < cellRect.bottom;
+            } else {
+                isOver = shipRect.left > cellRect.left &&
                 shipRect.right < cellRect.right &&
                 shipRect.top < (cellRect.bottom - cellRect.height / 2) &&
                 shipRect.bottom > (cellRect.top + cellRect.height / 2);
-            
+            }
+
             if (isOver && !item.cells.includes(cell.id)) {
                 item.cells?.push(cell.id);
             } else {
@@ -47,7 +63,6 @@ const ShipDragLayer = ({ shipId, size }) => {
             cell.classList.toggle("cannot-drop", cannotDrop);
             cell.classList.toggle("over", isOver);
         })
-
         if (item.cells.length < item.rows) {
             [...item.cells].forEach(cellId => document.getElementById(cellId).classList.add("cannot-drop"));
         }

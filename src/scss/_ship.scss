@@ -4,6 +4,10 @@
     display: block;
     height: calc((#{$cell-size} + #{$cell-gap}) * var(--rows) - #{$cell-gap});
 
+    &.rotate {
+        transform: rotate(90deg);
+    }
+
     &.sm {
         --rows: 2;
     }
